@@ -11,63 +11,10 @@
 
     <artifactId>maven-docker-demo</artifactId>
 
-    <properties>
-        <jjwt.version>0.11.2</jjwt.version>
-        <bcprov.version>1.67</bcprov.version>
-        <codec.version>1.15</codec.version>
-        <lang3.version>3.11</lang3.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>${jjwt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>${jjwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>${jjwt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bcprov.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${codec.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${lang3.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -103,13 +50,16 @@
                         <phase>package</phase>
                         <goals>
                             <goal>build</goal>
-                            <!--<goal>push</goal>-->
+                            <goal>push</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- 发布到服务器上:${project.artifactId}, 推送到私有仓库172.17.0.8:5000/${project.artifactId} -->
-                    <imageName>${project.artifactId}</imageName>
+                    <!-- harbor(serverId:harbor)需要提供授权认证信息(在maven里配置server),上传docker hub(serverId:docker-hub)同harbor -->
+                    <serverId>docker-hub</serverId>
+                    <!-- 发布到服务器上:${project.artifactId}. 推送到私有仓库: 172.17.0.9:9001/library/${project.artifactId}
+                         library是harbor默认仓库. 推送到docker hub上: john137724/${project.artifactId} -->
+                    <imageName>172.17.0.9:9001/library/${project.artifactId}</imageName>
                     <!--指定标签 默认 latest 发布的时候可以调整为发布版本号, 如 1.0-->
                     <imageTags>
                         <imageTag>latest</imageTag>
@@ -119,9 +69,8 @@
                     <!-- 指定 Dockerfile 路径-->
                     <dockerDirectory>${project.basedir}</dockerDirectory>
 
-                    <!-- 以下两行是为了docker push到DockerHub使用的,需要在maven的配置文件里配置认证信息。 -->
-                    <!-- <serverId>docker-hub</serverId>-->
-                    <!-- <registryUrl>https://index.docker.io/v1/</registryUrl>-->
+                    <!-- 以下是为了docker push到DockerHub使用的 -->
+                    <!-- <registryUrl>https://index.docker.io/v1/</registryUrl> -->
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
