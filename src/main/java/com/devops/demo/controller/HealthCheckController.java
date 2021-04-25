@@ -1,6 +1,5 @@
 package com.devops.demo.controller;
 
-import com.devops.demo.annotations.IgnoreAuth;
 import com.devops.demo.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/check")
-@IgnoreAuth
 public class HealthCheckController {
 
     @Value("${profile}")
